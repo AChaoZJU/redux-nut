@@ -42,7 +42,7 @@ function promise({ getState, dispatch }) {
 
 
 
-function countReducer(state = 0, action) {
+export function countReducer(state = 0, action) {
     switch (action.type) {
         case "ADD":
             return state + 1;
