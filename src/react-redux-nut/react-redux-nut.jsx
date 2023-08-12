@@ -4,14 +4,14 @@
 import React, {useCallback, useContext, useEffect, useLayoutEffect, useReducer, useState} from "react";
 import bindActionCreators from "../redux-nut/bindActionCreators";
 
-const Context = React.createContext()
+const StoreContext = React.createContext()
 
 
 // 2. Provider组件传递value(store)
 export function Provider({store, children}) {
-    return (<Context.Provider value={store}>
+    return (<StoreContext.Provider value={store}>
         {children}
-        </Context.Provider>)
+        </StoreContext.Provider>)
 }
 
 // 3. Consume the value passed from the provider
@@ -19,35 +19,19 @@ export function Provider({store, children}) {
 // useContext: functional components; customized hook
 // Consumer: no limit
 
-// const getDispatchPropsFromObject = (objects, dispatch) => {
-//     let dispatchProps = {}
-//     for(const k in objects) {
-//         dispatchProps[key] = () => dispatch(objects[k]())
-//     }
-//     return dispatchProps
-// }
-
 export const useForceUpdate = () => {
    return useCallback(useReducer(x=> x + 1, 0)[1], [])
 }
 
 export const connect = (mapStateToProps, mapDispatchToProps) => C => props => {
-    const store = useContext(Context)
+    const store = useContext(StoreContext)
 
-    const {subscribe, dispatch, getState} = store
+    const {dispatch, getState} = store
 
-    const forceUpdate = useForceUpdate()
+    useUpdate(store)
 
-    useLayoutEffect(() => {
-        const unsubscribe = subscribe(() => {
-            forceUpdate()
-        })
-        return () => {
-            unsubscribe()
-        }
-    }, [])
 
-    let dispatchProps = { dispatch }
+    let dispatchProps
     if(typeof mapDispatchToProps === 'function') {
         dispatchProps = mapDispatchToProps(dispatch)
     } else {
@@ -55,5 +39,30 @@ export const connect = (mapStateToProps, mapDispatchToProps) => C => props => {
     }
 
     return <C {...props} {...dispatchProps} {...mapStateToProps(getState(), props)}/>
+}
 
+export const useUpdate = (store) => {
+    const forceUpdate = useForceUpdate()
+
+    useLayoutEffect(() => {
+        const unsubscribe = store.subscribe(() => {
+            forceUpdate()
+        })
+        return () => {
+            unsubscribe()
+        }
+    }, [])
+}
+
+export function useSelector(selector) {
+    const store = useContext(StoreContext)
+
+    useUpdate(store)
+
+    return selector(store.getState())
+}
+
+export function useDispatch() {
+    const store = useContext(StoreContext)
+    return store.dispatch
 }
