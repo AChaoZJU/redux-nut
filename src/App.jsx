@@ -6,7 +6,7 @@ import ReactReduxHookPage from "./pages/ReactReduxHookPage";
 export default function App(props) {
   return (
     <div>
-      <ReactReduxHookPage />
+      <ReactReduxPage />
     </div>
   );
 }

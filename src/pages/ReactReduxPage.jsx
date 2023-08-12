@@ -19,7 +19,6 @@ const mapDispatchToProps = {add: () => ({type:'ADD'})}
 export const HOC = connect(mapStateToProps, mapDispatchToProps)
 export default HOC(class ReactReduxPage extends Component{
     render() {
-        console.log(this.props )
         return (
             <div>
                 <h3>ReactReduxPage</h3>

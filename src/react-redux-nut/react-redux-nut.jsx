@@ -1,7 +1,7 @@
 // Pass store as context
 // 1. Create a context object
 
-import React, {useCallback, useContext, useEffect, useLayoutEffect, useReducer, useState} from "react";
+import React, {useSyncExternalStore, useCallback, useContext, useEffect, useLayoutEffect, useReducer, useState} from "react";
 import bindActionCreators from "../redux-nut/bindActionCreators";
 
 const StoreContext = React.createContext()
@@ -26,10 +26,17 @@ export const useForceUpdate = () => {
 export const connect = (mapStateToProps, mapDispatchToProps) => C => props => {
     const store = useContext(StoreContext)
 
-    const {dispatch, getState} = store
+    const {dispatch, getState, subscribe} = store
 
-    useUpdate(store)
+    const forceUpdate = useForceUpdate()
 
+    // useUpdate(store)
+
+    const state = useSyncExternalStore(
+        () => subscribe(forceUpdate), getState
+    )
+
+    // console.log('checked', state === getState())
 
     let dispatchProps
     if(typeof mapDispatchToProps === 'function') {
@@ -57,7 +64,10 @@ export const useUpdate = (store) => {
 export function useSelector(selector) {
     const store = useContext(StoreContext)
 
-    useUpdate(store)
+    const forceUpdate = useForceUpdate()
+
+    // useUpdate(store)
+     useSyncExternalStore(() => store.subscriber(forceUpdate), store.getState)
 
     return selector(store.getState())
 }
