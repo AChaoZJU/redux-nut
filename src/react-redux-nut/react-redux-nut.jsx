@@ -66,8 +66,8 @@ export function useSelector(selector) {
 
     const forceUpdate = useForceUpdate()
 
-    // useUpdate(store)
-     useSyncExternalStore(() => store.subscriber(forceUpdate), store.getState)
+    useUpdate(store)
+    //  useSyncExternalStore(() => store.subscriber(forceUpdate), store.getState)
 
     return selector(store.getState())
 }
