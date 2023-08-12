@@ -6,7 +6,8 @@ import  createStore  from "./createStore";
 // import promise from 'redux-promise'
 // import {createStore} from "redux";
 import applyMiddleware from "../redux-nut/applyMiddleware";
-import {combineReducers} from "redux";
+import combineReducers from "../redux-nut/combineReducer";
+// import {combineReducers} from "redux";
 
 function thunk({ getState, dispatch }) {
     return (next) => (action) => {
