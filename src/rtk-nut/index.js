@@ -2,7 +2,8 @@
 
 import combineReducers from "../redux-nut/combineReducer";
 import createStore from "../store/createStore";
-import {createReducer} from "@reduxjs/toolkit";
+import {createReducer} from "./createReducer";
+// import {createReducer} from "@reduxjs/toolkit";
 
 export function configureStore(options) {
     const { reducer } = options
@@ -19,6 +20,7 @@ export function createSlice(option) {
             type: `${option.name}/${key}`,
             payload: payload
         })
+        // actionCreators[key].type = `${option.name}/${key}`
         reducerMap.set(`${option.name}/${key}`,option.reducers[key])
     }
 
