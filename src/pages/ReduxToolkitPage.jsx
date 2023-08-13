@@ -1,4 +1,4 @@
-import {increment } from "../store/counterSlice";
+import {increment, incrementByAmount } from "../store/counterSlice";
 import store from "../store/rtkStore";
 import {useCallback, useLayoutEffect} from "react";
 import {useReducer} from "react";
@@ -8,7 +8,7 @@ import {bindActionCreators} from "redux";
 export default function ReduxToolkitPage(props) {
     // const counter = store.getState().counter.value
     // useUpdate(store)
-    const counter = useSelector(state => state.counter.value)
+    const count = useSelector(state => state.counter.value)
 
     const dispatch = useDispatch()
 
@@ -20,7 +20,13 @@ export default function ReduxToolkitPage(props) {
     return (
         <div>
             <h3>ReduxToolkitPage</h3>
-            <button onClick={incrementAction}>{counter}</button>
+            <button onClick={() => store.dispatch(increment())}>{count}</button>
+            <button onClick={() => store.dispatch(incrementByAmount(100))}>
+                每次累加100：{count}
+            </button>
+            <button onClick={() => store.dispatch({type: "counter/increment"})}>
+                {count}
+            </button>
         </div>
     );
 }
