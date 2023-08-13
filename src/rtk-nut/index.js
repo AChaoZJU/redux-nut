@@ -2,6 +2,7 @@
 
 import combineReducers from "../redux-nut/combineReducer";
 import createStore from "../store/createStore";
+import {createReducer} from "@reduxjs/toolkit";
 
 export function configureStore(options) {
     const { reducer } = options
@@ -9,21 +10,6 @@ export function configureStore(options) {
     return createStore(rootReducer)
 }
 
-// const counterSlice = createSlice({
-//     name: 'counter',
-//     initialState: {value: 0},
-//     reducers: {
-//         increment: (state) => {
-//             state.value += 1;
-//         },
-//         decrement: (state) => {
-//             state.value -= 1;
-//         },
-//         incrementByAmount: (state, action) => {
-//             state.value += action.payload;
-//         },
-//     }
-// })
 
 export function createSlice(option) {
     let actionCreators = {}
@@ -36,16 +22,35 @@ export function createSlice(option) {
         reducerMap.set(`${option.name}/${key}`,option.reducers[key])
     }
 
+    // function buildReducer() {
+    //     return createReducer(option.initialState, (builder) =>{
+    //         for(const key in option.reducers) {
+    //             builder.addCase(`${option.name}/${key}`, reducerMap.get(`${option.name}/${key}`))
+    //         }
+    //     })
+    // }
+
+    let _reducer = createReducer(option.initialState, (builder) =>{
+        for(const key in option.reducers) {
+            builder.addCase(`${option.name}/${key}`, reducerMap.get(`${option.name}/${key}`))
+        }
+    })
+
     return {
         actions: actionCreators,
-        reducer: (state = option.initialState, action) => {
-            if (reducerMap.has(action.type)) {
-               reducerMap.get(action.type)(state, action)
-                return state
-            }else {
-                return state
-            }
-        }
+        reducer: _reducer
+            // if (!_reducer) _reducer = buildReducer();
+
+            // return _reducer(state, action);
+        // }
+        // reducer: (state = option.initialState, action) => {
+        //     if (reducerMap.has(action.type)) {
+        //        reducerMap.get(action.type)(state, action)
+        //         return state
+        //     }else {
+        //         return state
+        //     }
+        // }
     }
 
 }
