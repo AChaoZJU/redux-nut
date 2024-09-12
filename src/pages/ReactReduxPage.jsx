@@ -1,5 +1,5 @@
 import { Component} from 'react'
-// import {connect } from 'react-redux'
+import {connect } from 'react-redux'
 // import { bindActionCreators } from 'redux'
 import store from "../store";
 import bindActionCreators from "../redux-nut/bindActionCreators";
